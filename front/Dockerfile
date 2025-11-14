@@ -1,5 +1,5 @@
 # Build stage
-FROM node:22 AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /front
 
@@ -13,7 +13,7 @@ COPY src /front/src
 
 RUN yarn build
 
-FROM node:22-slim AS production
+FROM node:22-alpine AS production
 
 WORKDIR /front
 
