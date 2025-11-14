@@ -1,18 +1,14 @@
-FROM ubuntu:22.04 as builder
+FROM rust:1-slim-bookworm AS builder
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y \
-        build-essential \
-        libssl-dev \
-        pkg-config \
-        curl
-
-ENV PATH=/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-RUN curl https://sh.rustup.rs -sSf | \
-    sh -s -- -y --default-toolchain stable
+  apt-get install -y \
+  libssl-dev \
+  pkg-config \
+  fontconfig \
+  fonts-liberation && \
+  rm -rf /var/lib/apt/lists/*
 
 COPY watermark.png .
 COPY divedb_core divedb_core
@@ -24,16 +20,15 @@ COPY templates templates
 COPY src src
 
 RUN \
-  --mount=type=cache,target=/root/.cargo/registry \
+  --mount=type=cache,target=/usr/local/cargo/registry \
   --mount=type=cache,target=/usr/local/cargo/git \
   --mount=type=cache,target=/target \
   cargo build --release && cp target/release/divedb /divedb
 
-
-FROM ubuntu:22.04
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y fontconfig fonts-ubuntu fonts-liberation libssl3 ca-certificates && rm -rf /var/lib/apt/lists/*
+FROM gcr.io/distroless/cc-debian12
 COPY --from=builder /divedb /usr/local/bin/divedb
+COPY --from=builder /usr/share/fonts /usr/share/fonts
+COPY --from=builder /etc/fonts /etc/fonts
 
 EXPOSE 3333
 
