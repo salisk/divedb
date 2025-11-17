@@ -48,6 +48,7 @@ pub struct WebContext {
     pub admin_email: Option<String>,
     pub client: Client,
     pub openid_client: Option<OpenIDClient>,
+    pub show_branding: bool,
 }
 
 impl SchemaContext {
@@ -94,6 +95,12 @@ impl Query {
             .openid_client
             .as_ref()
             .map(|client| client.issuer_name()))
+    }
+
+    async fn show_branding(&self, context: &Context<'_>) -> FieldResult<bool> {
+        let schema_context = context.data::<SchemaContext>()?;
+
+        Ok(schema_context.web.show_branding)
     }
 
     async fn categories(&self, context: &Context<'_>) -> FieldResult<Vec<Category>> {

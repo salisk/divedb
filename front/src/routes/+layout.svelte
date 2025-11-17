@@ -7,9 +7,10 @@
 	import { goto } from '$app/navigation';
 	interface Props {
 		children?: import('svelte').Snippet;
+		data: { showBranding: boolean };
 	}
 
-	let { children }: Props = $props();
+	let { children, data }: Props = $props();
 	let currentUser: CurrentUserFragment | undefined;
 
 	onMount(() => {
@@ -191,9 +192,11 @@
 			<a class="btn btn-link hide-small" href="/sealife">Sealife</a>
 		</section>
 		<section class="navbar-center">
-			<a href="/">
-				<img class="logo" width="150" height="30" src={'/logo.svg'} alt="DiveDB Logo" />
-			</a>
+			{#if data.showBranding}
+				<a href="/">
+					<img class="logo" width="150" height="30" src={'/logo.svg'} alt="DiveDB Logo" />
+				</a>
+			{/if}
 		</section>
 		<section class="navbar-section">
 			{#if $session.loggedIn}
@@ -213,20 +216,22 @@
 </div>
 
 {@render children?.()}
-<footer class="container grid-lg">
-	<div class="columns">
-		<div class="column column-lg">
-			<div class="float-right">
-				<p>
-					<small>
-						DiveDB is an <a href="https://github.com/cetra3/divedb">open source project</a>, made
-						with ❤️ by <a href="https://cetra3.github.io/">cetra3</a>
-					</small>
-				</p>
+{#if data.showBranding}
+	<footer class="container grid-lg">
+		<div class="columns">
+			<div class="column column-lg">
+				<div class="float-right">
+					<p>
+						<small>
+							DiveDB is an <a href="https://github.com/cetra3/divedb">open source project</a>, made
+							with ❤️ by <a href="https://cetra3.github.io/">cetra3</a>
+						</small>
+					</p>
+				</div>
 			</div>
 		</div>
-	</div>
-</footer>
+	</footer>
+{/if}
 
 <style global lang="scss">
 	@import '../style/app.scss';

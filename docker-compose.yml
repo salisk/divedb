@@ -23,6 +23,7 @@ services:
       SMTP_HOST: maildev
       SMTP_PORT: 1025
       SMTP_SECURITY: none
+      SHOW_BRANDING: "true"
     ulimits:
       nofile:
         soft: 65535

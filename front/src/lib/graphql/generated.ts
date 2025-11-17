@@ -529,6 +529,7 @@ export type Query = {
 	regions: Array<Region>;
 	sealife: Array<Sealife>;
 	search: Array<SearchResult>;
+	showBranding: Scalars['Boolean']['output'];
 	siteUrl: Scalars['String']['output'];
 	user: PublicUserInfo;
 };
@@ -3144,6 +3145,7 @@ export type LoginInfoQuery = {
 	__typename?: 'Query';
 	fbAppId: string;
 	openidIssuerName?: string | null;
+	showBranding: boolean;
 };
 
 export type GetRegionsQueryVariables = Exact<{ [key: string]: never }>;
@@ -3968,6 +3970,7 @@ export const LoginInfoDocument = gql`
 	query loginInfo {
 		fbAppId
 		openidIssuerName
+		showBranding
 	}
 `;
 export const GetRegionsDocument = gql`
