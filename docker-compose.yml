@@ -2,6 +2,7 @@ version: "3"
 services:
   database:
     image: "postgres"
+    command: postgres -c deadlock_timeout=900s
     environment:
       POSTGRES_USER: divedb
       POSTGRES_PASSWORD: divedb

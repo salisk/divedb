@@ -1,6 +1,5 @@
 use anyhow::Error;
-use deadpool::managed::HookErrorCause;
-use deadpool_postgres::{Hook, HookError, Manager, ManagerConfig, Pool, RecyclingMethod};
+use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod};
 use foyer::HybridCache;
 use postgres_types::ToSql;
 use reqwest::Client;
@@ -56,14 +55,6 @@ impl DbHandle {
 
         let pool = Pool::builder(mgr)
             .max_size(16)
-            .post_create(Hook::async_fn(|obj, _| {
-                Box::pin(async move {
-                    obj.execute("SET deadlock_timeout = '900s'", &[])
-                        .await
-                        .map_err(|err| HookError::Abort(HookErrorCause::Backend(err)))?;
-                    Ok(())
-                })
-            }))
             .build()?;
 
         Migrator::new(pool.clone()).apply_migrations().await?;
